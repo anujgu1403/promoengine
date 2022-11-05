@@ -23,16 +23,16 @@ public class PromotionExecutionService implements BasseService {
 
 	public Mono<Cart> executePromotions(Cart cart) {
 		return Mono.just(cart)
-		        /*.map(cartModel -> promotionInitializer
+		        .map(cartModel -> promotionInitializer
 		                .mapCombinedItemPricePromotionRule(PromotionConstants.COMBINED_ITEMS_PRICE_PROMO)
 		                .execute(cartModel, promotionRepository.getActivePromotions()
-		                        .get(PromotionConstants.COMBINED_ITEMS_PRICE_PROMO)))*/
+		                        .get(PromotionConstants.COMBINED_ITEMS_PRICE_PROMO)))
 		        .map(cartModel -> promotionInitializer
 		                .mapFixedPricePromotionRule(PromotionConstants.N_A_ITEMS_PRICE_PROMO)
 		                .execute(cartModel, promotionRepository.getActivePromotions()
 		                        .get(PromotionConstants.N_A_ITEMS_PRICE_PROMO)))
 		        .map(cartModel -> promotionInitializer
-		                .mapFixedPricePromotionRule(PromotionConstants.N_A_ITEMS_PRICE_PROMO)
+		                .mapFixedPricePromotionRule(PromotionConstants.N_B_ITEMS_PRICE_PROMO)
 		                .execute(cartModel, promotionRepository.getActivePromotions()
 		                        .get(PromotionConstants.N_B_ITEMS_PRICE_PROMO)))
 				.map(CartTotalsOperations::refreshCartTotals);

@@ -1,0 +1,38 @@
+{
+    "cartId": "467t43467823",
+    "cartItems": [
+        {
+            "cartItemId": "4343323231",
+            "productInfo": {
+                "skuId": "C",
+                "name": "C Product",
+                "description": "Water heater",
+                "unitPrice": 20
+            },
+            "remainingQty": 1,
+            "quantity": 1
+        },
+        {
+            "cartItemId": "4343323232",
+            "productInfo": {
+                "skuId": "B",
+                "name": "B Product",
+                "description": "Water heater",
+                "unitPrice": 30
+            },
+            "remainingQty": 5,
+            "quantity": 5
+        },
+        {
+            "cartItemId": "4343323233",
+            "productInfo": {
+                "skuId": "A",
+                "name": "A Product",
+                "description": "Water heater",
+                "unitPrice": 50
+            },
+            "remainingQty": 5,
+            "quantity": 5
+        }
+    ]
+}

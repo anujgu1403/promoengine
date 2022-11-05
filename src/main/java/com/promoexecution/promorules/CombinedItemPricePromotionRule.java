@@ -2,9 +2,12 @@
 package com.promoexecution.promorules;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.promoexecution.model.cart.CartItem;
 import org.springframework.util.CollectionUtils;
 
 import com.promoexecution.common.abstraction.BasePromotionRules;
@@ -13,7 +16,6 @@ import com.promoexecution.model.promotion.Promotion;
 
 import lombok.Builder;
 import lombok.Data;
-import reactor.core.publisher.Mono;
 
 @Builder
 @Data
@@ -41,8 +43,7 @@ public class CombinedItemPricePromotionRule extends BasePromotionRules {
 		                .getSkuId())
 		        .collect(Collectors.toList());
 		if (!CollectionUtils.isEmpty(cartSkuIds)) {
-			isPromoApplicable = cartSkuIds.stream()
-			        .anyMatch(skuId -> !eligibleSkuIds.contains(skuId));
+			isPromoApplicable = cartSkuIds.containsAll(eligibleSkuIds);
 		}
 		return isPromoApplicable;
 	}
@@ -50,22 +51,24 @@ public class CombinedItemPricePromotionRule extends BasePromotionRules {
 	@Override
 	public Cart execute(Cart cart, Promotion promotion) {
 		var discountedPricePerUnit
-		    = discountedPrice.divide(BigDecimal.valueOf(eligibleSkuIds.size()));
+		    = discountedPrice.divide(BigDecimal.valueOf(eligibleSkuIds.size()), MathContext.DECIMAL32);
 		if (isApplicable(cart)) {
-			Mono.just(cart)
-					.map(cartModel->cartModel.getCartItems()
+			Set<CartItem> items = cart.getCartItems()
 			        .stream()
-			        .filter(cartItem -> (null != cartItem.getPromotionInfo()
-			                && cartItem.getPromotionInfo()
-			                        .isPromotionApplied()))
+			        .filter(cartItem -> (null == cartItem.getPromotionInfo()
+			                || !cartItem.getPromotionInfo()
+			                        .isPromotionApplied())
+							&& eligibleSkuIds.contains(cartItem.getProductInfo().getSkuId()))
 			        .map(cartItem -> {
 				        var discountPerUnit = cartItem.getProductInfo()
 				                .getUnitPrice()
 				                .subtract(discountedPricePerUnit);
+						promotion.setPromoAppliedQty(cartItem.getQuantity());
 				        // Build the promotion object and map it into cart item
 				        cartItem.setPromotionInfo(buildPromotion(promotion, discountPerUnit));
 				        return cartItem;
-			        }));
+			        }).collect(Collectors.toSet());
+			cart.getCartItems().removeAll(items);
 		}
 		return cart;
 	}
@@ -75,7 +78,9 @@ public class CombinedItemPricePromotionRule extends BasePromotionRules {
 		        .promotionId(promotion.getPromotionId())
 		        .isPromotionApplied(true)
 		        .discountPerUnit(discountPerUnit)
+				.promoAppliedQty(promotion.getPromoAppliedQty())
 		        .description(promotion.getDescription())
+				.isActive(promotion.isActive())
 		        .build();
 	}
 }

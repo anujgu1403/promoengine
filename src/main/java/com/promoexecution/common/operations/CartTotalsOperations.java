@@ -44,7 +44,7 @@ public final class CartTotalsOperations {
 								.isPromotionApplied()))
 		                .map(cartItem -> cartItem.getPromotionInfo()
 		                        .getDiscountPerUnit()
-		                        .multiply(cartItem.getQuantity()))
+		                        .multiply(cartItem.getPromotionInfo().getPromoAppliedQty()))
 		                .reduce(BigDecimal::add))
 		        .orElse(BigDecimal.ZERO);
 
