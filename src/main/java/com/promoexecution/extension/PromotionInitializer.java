@@ -10,9 +10,17 @@ import org.springframework.stereotype.Component;
 import com.promoexecution.promorules.CombinedItemPricePromotionRule;
 import com.promoexecution.promorules.FixedPricePromotionRule;
 
+/**
+ *  Promotion Initializer class to initialize promotions
+ */
 @Component
 public class PromotionInitializer {
 
+	/**
+	 *
+	 * @param promotion
+	 * @return
+	 */
 	public FixedPricePromotionRule mapFixedPricePromotionRule(String promotion) {
 
 		var promotionDetails = Arrays.stream(promotion.split(" "))
@@ -31,6 +39,11 @@ public class PromotionInitializer {
 
 	}
 
+	/**
+	 *
+	 * @param promotion
+	 * @return
+	 */
 	public CombinedItemPricePromotionRule mapCombinedItemPricePromotionRule(String promotion) {
 		var promotionDetails = Arrays.stream(promotion.split(" "))
 		        .filter(promo -> !"for".equals(promo) && !"&".equals(promo))

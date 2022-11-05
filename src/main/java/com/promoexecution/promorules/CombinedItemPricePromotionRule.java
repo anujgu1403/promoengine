@@ -17,6 +17,10 @@ import com.promoexecution.model.promotion.Promotion;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * Extension class of BasePromotionRule to define rule for combined items type promotion
+ * e.g. C & D for 30
+ */
 @Builder
 @Data
 public class CombinedItemPricePromotionRule extends BasePromotionRules {
@@ -29,6 +33,11 @@ public class CombinedItemPricePromotionRule extends BasePromotionRules {
 		this.discountedPrice = discountedPrice;
 	}
 
+	/**
+	 *
+	 * @param cart
+	 * @return
+	 */
 	@Override
 	public boolean isApplicable(Cart cart) {
 		boolean isPromoApplicable = false;
@@ -48,6 +57,12 @@ public class CombinedItemPricePromotionRule extends BasePromotionRules {
 		return isPromoApplicable;
 	}
 
+	/**
+	 *
+	 * @param cart
+	 * @param promotion
+	 * @return
+	 */
 	@Override
 	public Cart execute(Cart cart, Promotion promotion) {
 		var discountedPricePerUnit
@@ -63,7 +78,10 @@ public class CombinedItemPricePromotionRule extends BasePromotionRules {
 				        var discountPerUnit = cartItem.getProductInfo()
 				                .getUnitPrice()
 				                .subtract(discountedPricePerUnit);
+
+						//Calculate promotion applicable quantity and map into promotion object
 						promotion.setPromoAppliedQty(cartItem.getQuantity());
+
 				        // Build the promotion object and map it into cart item
 				        cartItem.setPromotionInfo(buildPromotion(promotion, discountPerUnit));
 				        return cartItem;
@@ -73,6 +91,12 @@ public class CombinedItemPricePromotionRule extends BasePromotionRules {
 		return cart;
 	}
 
+	/**
+	 *
+	 * @param promotion
+	 * @param discountPerUnit
+	 * @return
+	 */
 	private Promotion buildPromotion(Promotion promotion, BigDecimal discountPerUnit) {
 		return Promotion.builder()
 		        .promotionId(promotion.getPromotionId())

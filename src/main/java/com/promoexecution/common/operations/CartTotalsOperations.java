@@ -2,16 +2,23 @@
 package com.promoexecution.common.operations;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Optional;
 
 import com.promoexecution.model.cart.Cart;
 import com.promoexecution.model.cart.CartSummary;
 
+/**
+ *
+ * Class to calculate the order totals
+ */
 public final class CartTotalsOperations {
+	/**
+	 *
+	 * @param cart
+	 * @return
+	 */
 	public static Cart refreshCartTotals(Cart cart) {
-
 		var subTotal = calculateSubTotal(cart);
 		var totalDiscount = calculateTotalDiscount(cart);
 		cart.setCartSummary(CartSummary.builder()
@@ -23,6 +30,11 @@ public final class CartTotalsOperations {
 		return cart;
 	}
 
+	/**
+	 *
+	 * @param cart
+	 * @return
+	 */
 	private static BigDecimal calculateSubTotal(Cart cart) {
 		return Optional.ofNullable(cart)
 		        .flatMap(cart1 -> cart1.getCartItems()
@@ -35,6 +47,11 @@ public final class CartTotalsOperations {
 
 	}
 
+	/**
+	 *  To calculate promotion discount at cart item level and calculate total discount at cart level
+	 * @param cart
+	 * @return
+	 */
 	private static BigDecimal calculateTotalDiscount(Cart cart) {
 		return Optional.ofNullable(cart)
 		        .flatMap(cart1 -> cart1.getCartItems()

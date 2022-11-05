@@ -11,6 +11,10 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.UUID;
 
+/**
+ *  Repository class to get list of active promotions.
+ *  List of promotion can be get from database or using any API call
+ */
 @Getter
 @Component
 public class PromotionRepository {
@@ -19,6 +23,10 @@ public class PromotionRepository {
         promoEligibleSkuIds.addAll(skuIds);
     }
 
+    /**
+     *
+     * @return Map<String, Promotion>
+     */
     public  Map<String, Promotion> getActivePromotions(){
         Map<String, Promotion> promotionList = new HashMap<>();
         promotionList.put(PromotionConstants.N_A_ITEMS_PRICE_PROMO, Promotion.builder()
