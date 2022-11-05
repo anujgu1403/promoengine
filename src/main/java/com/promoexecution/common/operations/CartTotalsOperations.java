@@ -2,6 +2,8 @@
 package com.promoexecution.common.operations;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Optional;
 
 import com.promoexecution.model.cart.Cart;
@@ -14,8 +16,8 @@ public final class CartTotalsOperations {
 		var totalDiscount = calculateTotalDiscount(cart);
 		cart.setCartSummary(CartSummary.builder()
 		        .subTotal(subTotal)
-		        .totalDiscount(totalDiscount)
-		        .grandTotal(subTotal.subtract(totalDiscount))
+		        .totalDiscount(totalDiscount.setScale(0, RoundingMode.HALF_EVEN))
+		        .grandTotal(subTotal.subtract(totalDiscount).setScale(0, RoundingMode.CEILING))
 		        .build());
 
 		return cart;

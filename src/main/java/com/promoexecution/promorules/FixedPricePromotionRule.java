@@ -2,6 +2,7 @@
 package com.promoexecution.promorules;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +41,7 @@ public class FixedPricePromotionRule extends BasePromotionRules {
 
 	@Override
 	public Cart execute(Cart cart, Promotion promotion) {
-		var discountedPricePerUnit = discountedPrice.divide(noOfItems, RoundingMode.CEILING);
+		var discountedPricePerUnit = discountedPrice.divide(noOfItems, MathContext.DECIMAL32);
 		if (isApplicable(cart)) {
 			Set<CartItem> items = cart.getCartItems()
 			        .stream()
